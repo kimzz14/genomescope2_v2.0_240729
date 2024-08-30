@@ -1,6 +1,11 @@
-kmer_size=$1
+kmer=$1
 threadN=128
 
-kmc -k${kmer_size} -t${threadN} -m64 -ci1 -cs1000000000 -fq @FILES k${kmer_size} . 1> k${kmer_size}.log 2>&1
-kmc_tools transform k${kmer_size} histogram k${kmer_size}.histo -cx100000 1> k${kmer_size}.histo.log 2>&1
-genomescope2 -i k${kmer_size}.histo -o k${kmer_size} -k ${kmer_size} -p 2 1> k${kmer_size}.genomescope2.log 2>&1
+if [ -z "${kmer}" ]; then
+    echo "Error: The variable 'kmer' is empty."
+    exit 1
+fi
+
+kmc -k${kmer} -t${threadN} -m64 -ci1 -cs1000000000 -fq @FILES k${kmer} tmp 1> k${kmer}.log 2>&1
+kmc_tools transform k${kmer} histogram k${kmer}.histo -cx100000 1> k${kmer}.histo.log 2>&1
+genomescope2 -i k${kmer}.histo -o k${kmer} -k ${kmer} -p 2 1> k${kmer}.genomescope2.log 2>&1
